@@ -40,3 +40,4 @@
 /Users/eddiechan/Downloads/Interface/Interface/backend/obj/Debug/net8.0/backend.pdb
 /Users/eddiechan/Downloads/Interface/Interface/backend/obj/Debug/net8.0/backend.genruntimeconfig.cache
 /Users/eddiechan/Downloads/Interface/Interface/backend/obj/Debug/net8.0/ref/backend.dll
+/Users/eddiechan/Downloads/Interface/Interface/backend/obj/Debug/net8.0/backend.sourcelink.json

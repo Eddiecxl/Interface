@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Data;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
@@ -17,7 +18,7 @@ public class DataController : ControllerBase
     [HttpPost]
     public IActionResult Create(DataEntry entry)
     {
-        entry.CreatedAt = DateTime.UtcNow;
+        entry.CreatedAt = DateTime.UtcNow.AddHours(8);
         _context.DataEntries.Add(entry);
         _context.SaveChanges();
         return CreatedAtAction(nameof(GetAll), entry);
@@ -31,5 +32,19 @@ public class DataController : ControllerBase
         _context.DataEntries.Remove(entry);
         _context.SaveChanges();
         return NoContent();
+    }
+
+    [HttpDelete("reset")]
+    public IActionResult ResetDatabase()
+    {
+        try
+        {
+            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE DataEntries");
+            return Ok(new { message = "Database reset successfully." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

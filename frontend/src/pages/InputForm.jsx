@@ -25,35 +25,32 @@ export default function InputForm() {
   };
 
   return (
-    <div style={{ maxWidth: 500 }}>
-      <h2 style={{ marginBottom: '1.5rem' }}>Submit New Entry</h2>
-      {status && (
-        <div style={{
-          padding: '0.75rem', marginBottom: '1rem', borderRadius: 6,
-          background: status.type === 'success' ? '#dcfce7' : '#fee2e2',
-          color: status.type === 'success' ? '#166534' : '#991b1b'
-        }}>
-          {status.msg}
+    <div class="container">
+        <div className="card">
+        <h2>📝 Submit New Entry</h2>
+        {status && (
+            <div className={`alert ${status.type === 'success' ? 'alert-success' : 'alert-error'}`}>
+            {status.msg}
+            </div>
+        )}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+            <div>
+            <label>Name</label>
+            <input name="name" value={form.name} onChange={handleChange} required placeholder="Enter your name" />
+            </div>
+            <div>
+            <label>Email</label>
+            <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="Enter your email" />
+            </div>
+            <div>
+            <label>Message</label>
+            <textarea name="message" value={form.message} onChange={handleChange} required placeholder="Enter your message" />
+            </div>
+            <button type="submit" disabled={loading} className="btn-primary">
+            {loading ? 'Submitting...' : 'Submit Entry'}
+            </button>
+        </form>
         </div>
-      )}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div>
-          <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Name</label>
-          <input name="name" value={form.name} onChange={handleChange} required style={inputStyle} />
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Email</label>
-          <input name="email" type="email" value={form.email} onChange={handleChange} required style={inputStyle} />
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Message</label>
-          <textarea name="message" value={form.message} onChange={handleChange} required rows={4} style={{ ...inputStyle, resize: 'vertical' }} />
-        </div>
-        <button type="submit" disabled={loading}
-          style={{ padding: '0.75rem', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: 6, fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}>
-          {loading ? 'Submitting...' : 'Submit Entry'}
-        </button>
-      </form>
     </div>
   );
 }

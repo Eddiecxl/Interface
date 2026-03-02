@@ -20,49 +20,84 @@ export default function ViewData() {
     fetchData();
   };
 
+  const handleResetDatabase = async () => {
+    const confirmReset = window.confirm(
+      "⚠️ This will DELETE ALL DATA and reset ID to 1.\n\nAre you absolutely sure?"
+    );
+    if (!confirmReset) return;
+  
+    const finalConfirm = window.confirm(
+      "This action CANNOT be undone.\n\nPress OK again to confirm."
+    );
+    if (!finalConfirm) return;
+  
+    try {
+      await axios.delete(`${API}/reset`);
+      fetchData();
+    } catch (error) {
+      console.error("Reset failed:", error);
+      alert("Failed to reset database.");
+    }
+  };
+
   useEffect(() => { fetchData(); }, []);
 
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2>Database Records ({entries.length})</h2>
-        <button onClick={fetchData}
-          style={{ padding: '0.4rem 1rem', borderRadius: 6, border: '1px solid #cbd5e1', cursor: 'pointer' }}>
-          🔄 Refresh
-        </button>
-      </div>
-      {entries.length === 0
-        ? <p style={{ color: '#94a3b8' }}>No entries yet. Submit some data first!</p>
-        : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-            <thead style={{ background: '#1e293b', color: '#fff' }}>
-              <tr>
-                {['ID', 'Name', 'Email', 'Message', 'Date', 'Action'].map(h => (
-                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {entries.map((e, i) => (
-                <tr key={e.id} style={{ background: i % 2 === 0 ? '#f8fafc' : '#fff', borderTop: '1px solid #e2e8f0' }}>
-                  <td style={td}>{e.id}</td>
-                  <td style={td}>{e.name}</td>
-                  <td style={td}>{e.email}</td>
-                  <td style={td}>{e.message}</td>
-                  <td style={td}>{new Date(e.createdAt).toLocaleString()}</td>
-                  <td style={td}>
-                    <button onClick={() => handleDelete(e.id)}
-                      style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 4, padding: '0.3rem 0.7rem', cursor: 'pointer' }}>
-                      Delete
-                    </button>
-                  </td>
+    <div class="container">
+        <div className="card-wide">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h2 style={{ margin: 0, border: 'none', padding: 0 }}>📋 Records <span style={{ color: '#6366f1' }}>({entries.length})</span></h2>
+            <button onClick={fetchData} className="btn-secondary">🔄 Refresh</button>
+            <button
+                onClick={handleResetDatabase}
+                className="btn-danger"
+                style={{ marginLeft: "0.5rem" }}
+                >
+                🧨 Reset DB
+            </button>
+        </div>
+    
+        {entries.length === 0 ? (
+            <div className="empty-state">
+            <span>📭</span>
+            No entries yet. Submit some data first!
+            </div>
+        ) : (
+            <div className="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    {['ID', 'Name', 'Email', 'Message', 'Date', 'Action'].map(h => (
+                    <th key={h}>{h}</th>
+                    ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                {entries.map((e) => (
+                    <tr key={e.id}>
+                    <td><strong>#{e.id}</strong></td>
+                    <td>{e.name}</td>
+                    <td>{e.email}</td>
+                    <td>
+                    <div className="message-cell">
+                        {e.message}
+                    </div>
+                    </td>
+                    <td style={{ whiteSpace: 'nowrap', color: '#64748b', fontSize: '0.82rem' }}>
+                        {new Date(e.createdAt).toLocaleString('en-MY')}
+                    </td>
+                    <td>
+                        <button onClick={() => handleDelete(e.id)} className="btn-danger">Delete</button>
+                    </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+            </div>
         )}
+        </div>
     </div>
   );
 }
